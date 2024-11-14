@@ -71,7 +71,7 @@ class Particle {
     const color = `rgb(${this.colorProfile.r}, ${this.colorProfile.g}, ${this.colorProfile.b})`;
 
     context.beginPath();
-    context.arc(this.positon.x, this.positon.y, this.radius, 0, Math.PI * 2);
+    context.arc(this.positon.x - camera.x, this.positon.y - camera.y, this.radius, 0, Math.PI * 2);
     context.fillStyle = color;
     context.fill();
     context.closePath();
