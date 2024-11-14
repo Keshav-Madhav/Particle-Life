@@ -66,4 +66,20 @@ const worldToScreenCoordinates = (worldX, worldY) => {
   return { x: screenX, y: screenY };
 }
 
-export { zoomIn, zoomOut, screenToWorldCoordinates, worldToScreenCoordinates };
+/**
+ * Generates a random matrix of size m x m with values between -1 and 1.
+ * @param {number} m The size of the matrix
+ * @returns {number[][]} A random matrix of size m x m
+ */
+function makeRandomMatrix(m) {
+  const matrix = [];
+  for (let i = 0; i < m; i++) {
+    matrix.push([]);
+    for (let j = 0; j < m; j++) {
+      matrix[i].push(Math.random() * 2 - 1);
+    }
+  }
+  return matrix;
+}
+
+export { zoomIn, zoomOut, screenToWorldCoordinates, worldToScreenCoordinates, makeRandomMatrix };

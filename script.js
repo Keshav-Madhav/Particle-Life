@@ -1,7 +1,7 @@
 import { getDeltaTime } from "./utils/deltaTime.js";
 import { drawFPS } from "./utils/fpsDisplay.js";
 import { Particle } from "./classes/ParticleClass.js";
-import { screenToWorldCoordinates, zoomIn, zoomOut } from "./utils/utils.js";
+import { makeRandomMatrix, screenToWorldCoordinates, zoomIn, zoomOut } from "./utils/utils.js";
 
 /**
  * @type {Particle[]}
@@ -11,10 +11,14 @@ const particlesArray = [];
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+
+  normalizationRadius = (canvas.width / 10);
 }
 
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
+
+matrix = makeRandomMatrix(m);
 
 canvas.addEventListener('wheel', function(event) {
   event.preventDefault();
@@ -54,28 +58,20 @@ window.addEventListener('keydown', function(event) {
   }
 
   if(event.key === 'm') {
-    for (let i = 0; i < 10000; i++) {
+    for (let i = 0; i < 1000; i++) {
       const screenX = Math.random() * canvas.width;
       const screenY = Math.random() * canvas.height;
 
       // Convert screen coordinates to world coordinates
       const { x: worldX, y: worldY } = screenToWorldCoordinates(screenX, screenY);
 
-      //randomly choose a color from the colorPresets array
-      const chosenColor = colorPresets[Math.floor(Math.random() * colorPresets.length)];
-
-      const randomDx = Math.random() * 2 - 1;
-      const randomDy = Math.random() * 2 - 1;
+      // Random color index out of 6
+      const randomColorIndex = Math.floor(Math.random() * 6);
 
       particlesArray.push(new Particle({
         x: worldX,
         y: worldY,
-        r: chosenColor.r,
-        g: chosenColor.g,
-        b: chosenColor.b,
-        dx: randomDx,
-        dy: randomDy,
-        color: chosenColor.colorName,
+        hueIndex: randomColorIndex,
       }));
     }
   }
@@ -85,6 +81,21 @@ window.addEventListener('keydown', function(event) {
     camera.x = 0;
     camera.y = 0;
     camera.zoom = 1;
+    matrix = makeRandomMatrix(m);
+  }
+
+  if(event.key === 'c') {
+    particlesArray.length = 0;
+  }
+
+  if(event.key === ' '){
+    camera.x = 0;
+    camera.y = 0;
+    camera.zoom = 1;
+  }
+
+  if(event.key === 'e'){
+    matrix = makeRandomMatrix(m);
   }
 });
 
@@ -145,7 +156,8 @@ function draw() {
 
   //Draw and update particles
   particlesArray.forEach(particle => {
-    particle.update(deltaTime);
+    particle.update(particlesArray, matrix, deltaTime);
+
     particle.draw(ctx);
   });
 
