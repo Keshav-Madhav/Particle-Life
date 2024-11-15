@@ -49,7 +49,7 @@ class Particle {
     this.velocity = { dx, dy };
     this.radius = radius;
     this.hueIndex = hueIndex;
-    this.centralForceStrength = 0.4; // Small affinity towards the center
+    this.centralForceStrength = 0; // Small affinity towards the center
   }
 
   /**
@@ -71,9 +71,11 @@ class Particle {
   calculateForce(other, matrix) {
     const dx = other.positon.x - this.positon.x;
     const dy = other.positon.y - this.positon.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
+    const distanceSqrd = dx * dx + dy * dy;
 
-    if (distance === 0) return { fx: 0, fy: 0 };
+    if (distanceSqrd === 0) return { fx: 0, fy: 0 };
+
+    const distance = Math.sqrt(distanceSqrd);
 
     // Calculate normalized distance
     const r = distance / normalizationRadius;
@@ -89,8 +91,8 @@ class Particle {
 
   applyForce(fx, fy, deltaTime) {
     // Acceleration based on force
-    const ax = fx;
-    const ay = fy;
+    const ax = fx * 2;
+    const ay = fy * 2;
 
     // Update velocity based on acceleration and deltaTime
     this.velocity.dx += ax * deltaTime;
@@ -119,12 +121,15 @@ class Particle {
     // Calculate the directional vector towards the center
     const dx = x - this.positon.x;
     const dy = y - this.positon.y;
-    const distanceToCenter = Math.sqrt(dx * dx + dy * dy);
+    // Calculate the square of the distance to the center
+    const distanceToCenterSquared = dx * dx + dy * dy;
 
-    // Apply a small force towards the center if distance is non-zero
-    if (distanceToCenter > 0) {
-      const centralFx = this.centralForceStrength * dx / distanceToCenter;
-      const centralFy = this.centralForceStrength * dy / distanceToCenter;
+    // Apply a small force towards the center if the distance is non-zero
+    if (distanceToCenterSquared > 0) {
+      // Calculate the inverse distance without taking the square root
+      const inverseDistance = 1 / Math.sqrt(distanceToCenterSquared); // Normalizing factor
+      const centralFx = this.centralForceStrength * dx * inverseDistance;
+      const centralFy = this.centralForceStrength * dy * inverseDistance;
       totalFx += centralFx;
       totalFy += centralFy;
     }

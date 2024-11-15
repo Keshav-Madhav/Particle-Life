@@ -29,7 +29,7 @@ var camSpeed = 2;
 
 const m = 6;
 const beta = 0.2;
-const friction = 0.8;
+const friction = 0.3;
 var normalizationRadius = (canvas.width / 10)
 var matrix = [
   [1, 0.5, 0, 0, 0, 0],

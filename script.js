@@ -59,14 +59,15 @@ window.addEventListener('keydown', function(event) {
 
   if(event.key === 'm') {
     for (let i = 0; i < 1000; i++) {
-      const screenX = Math.random() * canvas.width;
-      const screenY = Math.random() * canvas.height;
+      // Random screen coordinates with 10% padding
+      const screenX = Math.random() * (canvas.width * 0.8) + canvas.width * 0.1;
+      const screenY = Math.random() * (canvas.height * 0.8) + canvas.height * 0.1;
 
       // Convert screen coordinates to world coordinates
       const { x: worldX, y: worldY } = screenToWorldCoordinates(screenX, screenY);
 
       // Random color index out of 6
-      const randomColorIndex = Math.floor(Math.random() * 6);
+      const randomColorIndex = Math.floor(Math.random() * m);
 
       particlesArray.push(new Particle({
         x: worldX,
@@ -140,14 +141,12 @@ function drawStatistics() {
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const deltaTime = getDeltaTime(10);
 
-  const fps = drawFPS(canvas.width, canvas.height, ctx);
-  const deltaTime = getDeltaTime(120, fps.avgFps);
-
-  if (keys.ArrowUp) camera.y -= (camSpeed / Math.sqrt(camera.zoom));
-  if (keys.ArrowDown) camera.y += (camSpeed / Math.sqrt(camera.zoom));
-  if (keys.ArrowLeft) camera.x -= (camSpeed / Math.sqrt(camera.zoom));
-  if (keys.ArrowRight) camera.x += (camSpeed / Math.sqrt(camera.zoom));
+  if (keys.ArrowUp) camera.y -= (camSpeed / camera.zoom);
+  if (keys.ArrowDown) camera.y += (camSpeed / camera.zoom);
+  if (keys.ArrowLeft) camera.x -= (camSpeed / camera.zoom);
+  if (keys.ArrowRight) camera.x += (camSpeed / camera.zoom);
 
   ctx.save();
   ctx.translate(canvas.width / 2, canvas.height / 2);
@@ -164,6 +163,8 @@ function draw() {
   ctx.restore();
 
   drawStatistics();
+
+  drawFPS(canvas.width, canvas.height, ctx);
 
   requestAnimationFrame(draw);
 }
