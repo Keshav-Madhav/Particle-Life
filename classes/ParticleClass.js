@@ -49,7 +49,7 @@ class Particle {
     this.velocity = { dx, dy };
     this.radius = radius;
     this.hueIndex = hueIndex;
-    this.centralForceStrength = 0; // Small affinity towards the center
+    this.centralForceStrength = 0.1; // Small affinity towards the center
   }
 
   /**

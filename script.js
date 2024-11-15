@@ -19,6 +19,7 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 matrix = makeRandomMatrix(m);
+spawnBunchOfParticles(2000);
 
 canvas.addEventListener('wheel', function(event) {
   event.preventDefault();
@@ -58,23 +59,7 @@ window.addEventListener('keydown', function(event) {
   }
 
   if(event.key === 'm') {
-    for (let i = 0; i < 1000; i++) {
-      // Random screen coordinates with 10% padding
-      const screenX = Math.random() * (canvas.width * 0.8) + canvas.width * 0.1;
-      const screenY = Math.random() * (canvas.height * 0.8) + canvas.height * 0.1;
-
-      // Convert screen coordinates to world coordinates
-      const { x: worldX, y: worldY } = screenToWorldCoordinates(screenX, screenY);
-
-      // Random color index out of 6
-      const randomColorIndex = Math.floor(Math.random() * m);
-
-      particlesArray.push(new Particle({
-        x: worldX,
-        y: worldY,
-        hueIndex: randomColorIndex,
-      }));
-    }
+    spawnBunchOfParticles(2000);
   }
 
   if(event.key === 'r') {
@@ -170,3 +155,23 @@ function draw() {
 }
 
 draw();
+
+function spawnBunchOfParticles(numParticles) {
+  for (let i = 0; i < numParticles; i++) {
+    // Random screen coordinates with 10% padding
+    const screenX = Math.random() * (canvas.width * 0.8) + canvas.width * 0.1;
+    const screenY = Math.random() * (canvas.height * 0.8) + canvas.height * 0.1;
+
+    // Convert screen coordinates to world coordinates
+    const { x: worldX, y: worldY } = screenToWorldCoordinates(screenX, screenY);
+
+    // Random color index out of 6
+    const randomColorIndex = Math.floor(Math.random() * m);
+
+    particlesArray.push(new Particle({
+      x: worldX,
+      y: worldY,
+      hueIndex: randomColorIndex,
+    }));
+  }
+}
